@@ -11,6 +11,7 @@ hs_err_pid*
 replay_pid*
 out/
 target/
+mvnw*
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -20,3 +21,9 @@ target/
 *.iws
 *.iml
 *.ipr
+/volumes/
+/ewm-main-service/.mvn/
+/ewm-stat-service/.mvn/
+/ewm-stat-service/client/.mvn/
+/ewm-stat-service/dto/.mvn/
+/ewm-stat-service/service/.mvn/
