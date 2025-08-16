@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package ru.practicum.service.stats;
 
 import org.mapstruct.Mapper;
 import ru.practicum.dto.HitDto;

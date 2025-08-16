@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package ru.practicum.service.stats;
 
 public interface Stats {
     String getApp();
