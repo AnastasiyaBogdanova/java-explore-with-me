@@ -24,3 +24,6 @@ mvnw*
 /volumes/
 /ewm-stat-service/.mvn/
 /ewm-main-service/.mvn/
+/ewm-stat-service/client/.mvn/
+/ewm-stat-service/dto/.mvn/
+/ewm-stat-service/service/.mvn/
