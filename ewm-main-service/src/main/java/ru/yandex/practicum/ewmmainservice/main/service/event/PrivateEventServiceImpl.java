@@ -1,5 +1,6 @@
 package ru.yandex.practicum.ewmmainservice.main.service.event;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.ewmmainservice.main.EventState;
 import ru.yandex.practicum.ewmmainservice.main.StateAction;
 import ru.yandex.practicum.ewmmainservice.main.dto.category.CategoryDto;
-import ru.yandex.practicum.ewmmainservice.main.dto.event.*;
+import ru.yandex.practicum.ewmmainservice.main.dto.event.EventFullDto;
+import ru.yandex.practicum.ewmmainservice.main.dto.event.EventShortDto;
+import ru.yandex.practicum.ewmmainservice.main.dto.event.NewEventDto;
+import ru.yandex.practicum.ewmmainservice.main.dto.event.UpdateEventUserRequest;
 import ru.yandex.practicum.ewmmainservice.main.dto.user.UserDto;
 import ru.yandex.practicum.ewmmainservice.main.exception.ActionConflictException;
 import ru.yandex.practicum.ewmmainservice.main.exception.ConflictException;
@@ -20,10 +24,12 @@ import ru.yandex.practicum.ewmmainservice.main.model.Event;
 import ru.yandex.practicum.ewmmainservice.main.model.Location;
 import ru.yandex.practicum.ewmmainservice.main.repository.EventRepository;
 import ru.yandex.practicum.ewmmainservice.main.service.category.PublicCategoryService;
+import ru.yandex.practicum.ewmmainservice.main.service.statistic.StatisticService;
 import ru.yandex.practicum.ewmmainservice.main.service.user.AdminUserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +39,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final EventRepository eventRepository;
     private final AdminUserService userService;
     private final PublicCategoryService categoryService;
+    private final StatisticService statisticService;
 
     @Override
     @Transactional
@@ -90,19 +97,41 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     @Override
     @Transactional(readOnly = true)
-    public EventFullDto getUserEventById(Long userId, Long eventId) {
+    public EventFullDto getUserEventById(Long userId, Long eventId, HttpServletRequest request) {
+
         Event event = eventRepository.findByIdAndInitiatorIdWithInitiator(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
-        return EventMapper.toEventFullDto(event);
+
+        statisticService.postHit("/users/" + userId + "/events/" + eventId, request.getRemoteAddr());
+
+        Map<Long, Long> viewsStats = statisticService.getStatsByEvents(List.of(event), true);
+        long statsViews = viewsStats.getOrDefault(eventId, 0L);
+
+
+        event.setViews(statsViews + 1L);
+        Event updatedEvent = eventRepository.save(event);
+
+        return EventMapper.toEventFullDto(updatedEvent);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventShortDto> getUserEvents(Long userId, Integer from, Integer size) {
+    public List<EventShortDto> getUserEvents(Long userId, Integer from, Integer size, HttpServletRequest request) {
+
+        statisticService.postHit("/users/" + userId + "/events", request.getRemoteAddr());
+
         Pageable pageable = PageRequest.of(from / size, size);
-        return eventRepository.findByInitiatorId(userId, pageable)
-                .stream()
-                .map(EventMapper::toEventShortDto)
+        List<Event> events = eventRepository.findByInitiatorId(userId, pageable).getContent();
+
+        Map<Long, Long> viewsStats = statisticService.getStatsByEvents(events, false);
+
+        return events.stream()
+                .map(event -> {
+                    EventShortDto dto = EventMapper.toEventShortDto(event);
+                    long statsViews = viewsStats.getOrDefault(event.getId(), 0L);
+                    dto.setViews(statsViews + event.getViews());
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

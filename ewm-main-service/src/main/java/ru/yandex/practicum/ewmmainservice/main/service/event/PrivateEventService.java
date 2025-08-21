@@ -1,5 +1,6 @@
 package ru.yandex.practicum.ewmmainservice.main.service.event;
 
+import jakarta.servlet.http.HttpServletRequest;
 import ru.yandex.practicum.ewmmainservice.main.dto.event.EventFullDto;
 import ru.yandex.practicum.ewmmainservice.main.dto.event.EventShortDto;
 import ru.yandex.practicum.ewmmainservice.main.dto.event.NewEventDto;
@@ -13,7 +14,7 @@ public interface PrivateEventService {
 
     EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateRequest);
 
-    EventFullDto getUserEventById(Long userId, Long eventId);
+    EventFullDto getUserEventById(Long userId, Long eventId, HttpServletRequest request);
 
-    List<EventShortDto> getUserEvents(Long userId, Integer from, Integer size);
+    List<EventShortDto> getUserEvents(Long userId, Integer from, Integer size, HttpServletRequest request);
 }

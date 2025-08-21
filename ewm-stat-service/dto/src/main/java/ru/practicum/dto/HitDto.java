@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HitDto {
-    private Long id;
     @NotNull(message = "app should not be empty")
     private String app;
     @NotNull(message = "uri should not be empty")

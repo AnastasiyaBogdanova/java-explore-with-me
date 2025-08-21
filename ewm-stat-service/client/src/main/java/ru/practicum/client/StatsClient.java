@@ -17,13 +17,12 @@ import java.util.Map;
 @Service
 public class StatsClient extends BaseClient {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final String API_PREFIX = "/stats";
 
     @Autowired
     public StatsClient(@Value("${stats-service.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                         .requestFactory(() -> new HttpComponentsClientHttpRequestFactory())
                         .build()
         );

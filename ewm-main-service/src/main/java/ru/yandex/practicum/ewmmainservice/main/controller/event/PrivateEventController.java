@@ -1,5 +1,6 @@
 package ru.yandex.practicum.ewmmainservice.main.controller.event;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,9 @@ public class PrivateEventController {
     public List<EventShortDto> getUserEvents(
             @PathVariable Long userId,
             @RequestParam(defaultValue = "0") Integer from,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(defaultValue = "10") Integer size, HttpServletRequest request) {
         log.info("Getting events for user id: {}, from: {}, size: {}", userId, from, size);
-        return eventService.getUserEvents(userId, from, size);
+        return eventService.getUserEvents(userId, from, size, request);
     }
 
     @PostMapping
@@ -43,9 +44,9 @@ public class PrivateEventController {
     @GetMapping("/{eventId}")
     public EventFullDto getUserEvent(
             @PathVariable Long userId,
-            @PathVariable Long eventId) {
+            @PathVariable Long eventId, HttpServletRequest request) {
         log.info("Getting event id: {} for user id: {}", eventId, userId);
-        return eventService.getUserEventById(userId, eventId);
+        return eventService.getUserEventById(userId, eventId, request);
     }
 
     @PatchMapping("/{eventId}")

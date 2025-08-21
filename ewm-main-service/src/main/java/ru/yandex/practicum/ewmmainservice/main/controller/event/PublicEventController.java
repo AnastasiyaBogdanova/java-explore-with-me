@@ -1,5 +1,6 @@
 package ru.yandex.practicum.ewmmainservice.main.controller.event;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,7 +33,7 @@ public class PublicEventController {
             @RequestParam(defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "0") Integer from,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(defaultValue = "10") Integer size, HttpServletRequest request) {
 
         List<Long> categoriesList = parseLongList(categories);
 
@@ -41,13 +42,13 @@ public class PublicEventController {
                 text, categoriesList, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
 
         return eventService.getPublicEvents(text, categoriesList, paid, rangeStart, rangeEnd,
-                onlyAvailable, sort, from, size);
+                onlyAvailable, sort, from, size, request);
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEvent(@PathVariable("id") Long eventId) {
+    public EventFullDto getEvent(@PathVariable("id") Long eventId, HttpServletRequest request) {
         log.info("Getting public event by id: {}", eventId);
-        return eventService.getEventById(eventId);
+        return eventService.getEventById(eventId, request);
     }
 
     private List<Long> parseLongList(String param) {

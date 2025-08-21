@@ -34,3 +34,6 @@ logging:
     ru:
       practicum:
         emw: DEBUG
+
+app:
+  name: "ewm-main-service"

@@ -68,7 +68,7 @@ public class Event {
     @Column(nullable = false, length = 120)
     private String title;
 
-    private Long views;
+    private Long views = 0L;
 }
 
 
