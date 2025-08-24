@@ -1,5 +1,6 @@
 package ru.practicum.service.stats;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class StatsService {
     public List<StatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<Stats> result;
         if (start.isAfter(end)) {
-            throw new IllegalArgumentException("Start date must be before end date");
+            throw new ValidationException("Start date must be before end date");
         }
 
         if (uris == null || uris.isEmpty()) {
