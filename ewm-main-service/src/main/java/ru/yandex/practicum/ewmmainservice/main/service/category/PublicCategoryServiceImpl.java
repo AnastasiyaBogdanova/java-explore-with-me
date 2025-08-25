@@ -26,7 +26,7 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
         Pageable pageable = PageRequest.of((from > 0) ? from / size : 0, size);
         return categoryRepository.findAll(pageable)
                 .stream()
-                .map(CategoryMapper::toCategoryDto)
+                .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -35,6 +35,6 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
     public CategoryDto getCategoryById(Long catId) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found"));
-        return CategoryMapper.toCategoryDto(category);
+        return CategoryMapper.toDto(category);
     }
 }

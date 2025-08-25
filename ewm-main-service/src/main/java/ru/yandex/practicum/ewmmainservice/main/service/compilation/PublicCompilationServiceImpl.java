@@ -28,12 +28,12 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         if (pinned != null) {
             return compilationRepository.findAllByPinned(pinned, pageable)
                     .stream()
-                    .map(CompilationMapper::toCompilationDto)
+                    .map(CompilationMapper::toDto)
                     .collect(Collectors.toList());
         } else {
             return compilationRepository.findAll(pageable)
                     .stream()
-                    .map(CompilationMapper::toCompilationDto)
+                    .map(CompilationMapper::toDto)
                     .collect(Collectors.toList());
         }
     }
@@ -44,6 +44,6 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Compilation with id=" + compId + " was not found"));
 
-        return CompilationMapper.toCompilationDto(compilation);
+        return CompilationMapper.toDto(compilation);
     }
 }

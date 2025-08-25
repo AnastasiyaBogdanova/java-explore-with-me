@@ -20,6 +20,7 @@ import ru.yandex.practicum.ewmmainservice.main.model.Event;
 import ru.yandex.practicum.ewmmainservice.main.model.Location;
 import ru.yandex.practicum.ewmmainservice.main.repository.EventRepository;
 import ru.yandex.practicum.ewmmainservice.main.service.category.PublicCategoryService;
+import ru.yandex.practicum.ewmmainservice.main.service.comment.CommentService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +32,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final PublicCategoryService categoryService;
+    private final CommentService commentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -55,13 +57,13 @@ public class AdminEventServiceImpl implements AdminEventService {
             Page<Event> events = eventRepository.findAdminEventsWithoutDate(
                     processedUsers, eventStates, processedCategories, pageable);
             return events.stream()
-                    .map(EventMapper::toEventFullDto)
+                    .map(EventMapper::toFullDto)
                     .collect(Collectors.toList());
         } else {
             Page<Event> events = eventRepository.findAdminEvents(
                     processedUsers, eventStates, processedCategories, rangeStart, rangeEnd, pageable);
             return events.stream()
-                    .map(EventMapper::toEventFullDto)
+                    .map(EventMapper::toFullDto)
                     .collect(Collectors.toList());
         }
     }
@@ -94,7 +96,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         updateEventFields(event, updateRequest);
         Event updatedEvent = eventRepository.save(event);
-        return EventMapper.toEventFullDto(updatedEvent);
+        return EventMapper.toFullDto(updatedEvent);
     }
 
     private void updateEventFields(Event event, UpdateEventAdminRequest request) {
@@ -108,7 +110,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         if (request.getCategory() != null) {
             CategoryDto category = categoryService.getCategoryById(request.getCategory());
-            event.setCategory(CategoryMapper.toCategory(category));
+            event.setCategory(CategoryMapper.toEntity(category));
         }
 
         if (request.getLocation() != null) {

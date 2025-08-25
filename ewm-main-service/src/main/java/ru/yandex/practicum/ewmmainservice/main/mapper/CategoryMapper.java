@@ -8,20 +8,20 @@ import ru.yandex.practicum.ewmmainservice.main.model.Category;
 
 @UtilityClass
 public class CategoryMapper {
-    public static Category toCategory(NewCategoryDto newCategoryDto) {
+    public static Category toEntity(NewCategoryDto newCategoryDto) {
         return Category.builder()
                 .name(newCategoryDto.getName())
                 .build();
     }
 
-    public static CategoryDto toCategoryDto(Category category) {
+    public static CategoryDto toDto(Category category) {
         return new CategoryDto(
                 category.getId(),
                 category.getName()
         );
     }
 
-    public static Category toCategory(CategoryDto categoryDto) {
+    public static Category toEntity(CategoryDto categoryDto) {
         return Category.builder()
                 .id(categoryDto.getId())
                 .name(categoryDto.getName())

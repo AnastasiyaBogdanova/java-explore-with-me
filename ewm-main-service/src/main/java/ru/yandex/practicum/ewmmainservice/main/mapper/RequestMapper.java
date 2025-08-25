@@ -4,7 +4,7 @@ import ru.yandex.practicum.ewmmainservice.main.dto.request.ParticipationRequestD
 import ru.yandex.practicum.ewmmainservice.main.model.Request;
 
 public class RequestMapper {
-    public static ParticipationRequestDto toParticipationRequestDto(Request request) {
+    public static ParticipationRequestDto toDto(Request request) {
         return new ParticipationRequestDto(
                 request.getId(),
                 request.getCreated(),

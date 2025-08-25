@@ -24,6 +24,7 @@ import ru.yandex.practicum.ewmmainservice.main.model.Event;
 import ru.yandex.practicum.ewmmainservice.main.model.Location;
 import ru.yandex.practicum.ewmmainservice.main.repository.EventRepository;
 import ru.yandex.practicum.ewmmainservice.main.service.category.PublicCategoryService;
+import ru.yandex.practicum.ewmmainservice.main.service.comment.CommentService;
 import ru.yandex.practicum.ewmmainservice.main.service.statistic.StatisticService;
 import ru.yandex.practicum.ewmmainservice.main.service.user.AdminUserService;
 
@@ -40,6 +41,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final AdminUserService userService;
     private final PublicCategoryService categoryService;
     private final StatisticService statisticService;
+    private final CommentService commentService;
 
     @Override
     @Transactional
@@ -54,16 +56,16 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             throw new NotFoundException("Category not found with id: " + newEventDto.getCategory());
         }
 
-        Event event = EventMapper.toEvent(newEventDto);
+        Event event = EventMapper.toEntity(newEventDto);
         event.setInitiator(UserMapper.toUser(initiator));
-        event.setCategory(CategoryMapper.toCategory(category));
+        event.setCategory(CategoryMapper.toEntity(category));
         event.setState(EventState.PENDING);
         event.setConfirmedRequests(0);
         event.setViews(0L);
         event.setCreatedOn(LocalDateTime.now());
 
         Event savedEvent = eventRepository.save(event);
-        return EventMapper.toEventFullDto(savedEvent);
+        return EventMapper.toFullDto(savedEvent);
     }
 
     @Override
@@ -92,7 +94,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
 
         Event updatedEvent = eventRepository.save(event);
-        return EventMapper.toEventFullDto(updatedEvent);
+        return EventMapper.toFullDto(updatedEvent);
     }
 
     @Override
@@ -111,7 +113,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         event.setViews(statsViews + 1L);
         Event updatedEvent = eventRepository.save(event);
 
-        return EventMapper.toEventFullDto(updatedEvent);
+        return EventMapper.toFullDto(updatedEvent);
     }
 
     @Override
@@ -127,7 +129,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         return events.stream()
                 .map(event -> {
-                    EventShortDto dto = EventMapper.toEventShortDto(event);
+                    EventShortDto dto = EventMapper.toShortDto(event);
                     long statsViews = viewsStats.getOrDefault(event.getId(), 0L);
                     dto.setViews(statsViews + event.getViews());
                     return dto;
@@ -146,7 +148,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         if (request.getCategory() != null) {
             CategoryDto category = categoryService.getCategoryById(request.getCategory());
-            event.setCategory(CategoryMapper.toCategory(category));
+            event.setCategory(CategoryMapper.toEntity(category));
         }
 
         if (request.getLocation() != null) {
