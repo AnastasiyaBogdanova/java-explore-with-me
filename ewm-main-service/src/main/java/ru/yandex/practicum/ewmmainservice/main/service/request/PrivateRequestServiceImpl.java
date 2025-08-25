@@ -59,7 +59,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             eventRepository.save(event);
 
-            return RequestMapper.toParticipationRequestDto(savedRequest);
+            return RequestMapper.toDto(savedRequest);
         } else {
 
             long confirmedCount = requestRepository.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
@@ -72,7 +72,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                     event.setConfirmedRequests((int) (confirmedCount + 1));
                     eventRepository.save(event);
 
-                    return RequestMapper.toParticipationRequestDto(savedRequest);
+                    return RequestMapper.toDto(savedRequest);
                 } else {
 
                     throw new ActionConflictException("Participant limit reached for event " + eventId);
@@ -80,7 +80,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             } else {
                 request.setStatus(RequestStatus.PENDING);
                 Request savedRequest = requestRepository.save(request);
-                return RequestMapper.toParticipationRequestDto(savedRequest);
+                return RequestMapper.toDto(savedRequest);
             }
         }
     }
@@ -114,7 +114,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         adminUserService.userExists(userId);
         List<Request> requests = requestRepository.findByRequesterId(userId);
         return requests.stream()
-                .map(RequestMapper::toParticipationRequestDto)
+                .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -132,7 +132,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
 
         request.setStatus(RequestStatus.CANCELED);
         Request updatedRequest = requestRepository.save(request);
-        return RequestMapper.toParticipationRequestDto(updatedRequest);
+        return RequestMapper.toDto(updatedRequest);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
 
         List<Request> requests = requestRepository.findByEventId(eventId);
         return requests.stream()
-                .map(RequestMapper::toParticipationRequestDto)
+                .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -220,7 +220,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             if (participantLimit == 0 || confirmedCount < participantLimit) {
                 request.setStatus(RequestStatus.CONFIRMED);
                 requestRepository.save(request);
-                confirmed.add(RequestMapper.toParticipationRequestDto(request));
+                confirmed.add(RequestMapper.toDto(request));
                 confirmedCount++;
 
                 event.setConfirmedRequests((int) confirmedCount);
@@ -228,7 +228,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             } else {
                 request.setStatus(RequestStatus.REJECTED);
                 requestRepository.save(request);
-                rejected.add(RequestMapper.toParticipationRequestDto(request));
+                rejected.add(RequestMapper.toDto(request));
             }
         }
     }
@@ -237,7 +237,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         for (Request request : requests) {
             request.setStatus(RequestStatus.REJECTED);
             requestRepository.save(request);
-            rejected.add(RequestMapper.toParticipationRequestDto(request));
+            rejected.add(RequestMapper.toDto(request));
         }
     }
 }

@@ -16,6 +16,7 @@ import ru.yandex.practicum.ewmmainservice.main.exception.NotFoundException;
 import ru.yandex.practicum.ewmmainservice.main.mapper.EventMapper;
 import ru.yandex.practicum.ewmmainservice.main.model.Event;
 import ru.yandex.practicum.ewmmainservice.main.repository.EventRepository;
+import ru.yandex.practicum.ewmmainservice.main.service.comment.CommentService;
 import ru.yandex.practicum.ewmmainservice.main.service.statistic.StatisticService;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepository eventRepository;
     private final StatisticService statisticService;
+    private final CommentService commentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,7 +60,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         return events.stream()
                 .map(event -> {
-                    EventShortDto dto = EventMapper.toEventShortDto(event);
+                    EventShortDto dto = EventMapper.toShortDto(event);
                     long statsViews = viewsStats.getOrDefault(event.getId(), 0L);
                     dto.setViews(statsViews + event.getViews());
                     return dto;
@@ -84,7 +86,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         event.setViews(statsViews + 1);
         Event savedEvent = eventRepository.save(event);
 
-        EventFullDto dto = EventMapper.toEventFullDto(savedEvent);
+        EventFullDto dto = EventMapper.toFullDto(savedEvent);
 
         return dto;
     }

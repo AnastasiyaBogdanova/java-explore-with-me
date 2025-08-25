@@ -33,7 +33,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         User user = UserMapper.toUser(newUserRequest);
         User savedUser = userRepository.save(user);
-        return UserMapper.toUserDto(savedUser);
+        return UserMapper.toDto(savedUser);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
 
         return usersPage.stream()
-                .map(UserMapper::toUserDto)
+                .map(UserMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -67,7 +67,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public UserDto getUserById(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
-        return UserMapper.toUserDto(user);
+        return UserMapper.toDto(user);
     }
 
     @Override

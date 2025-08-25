@@ -24,9 +24,9 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
             throw new ActionConflictException("Category with name '" + newCategoryDto.getName() + "' already exists.");
         }
 
-        Category category = CategoryMapper.toCategory(newCategoryDto);
+        Category category = CategoryMapper.toEntity(newCategoryDto);
         Category savedCategory = categoryRepository.save(category);
-        return CategoryMapper.toCategoryDto(savedCategory);
+        return CategoryMapper.toDto(savedCategory);
     }
 
     @Override
@@ -57,6 +57,6 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
         category.setName(categoryDto.getName());
         Category updatedCategory = categoryRepository.save(category);
-        return CategoryMapper.toCategoryDto(updatedCategory);
+        return CategoryMapper.toDto(updatedCategory);
     }
 }

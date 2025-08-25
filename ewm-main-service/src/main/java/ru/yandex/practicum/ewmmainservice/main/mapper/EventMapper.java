@@ -6,12 +6,10 @@ import ru.yandex.practicum.ewmmainservice.main.dto.event.NewEventDto;
 import ru.yandex.practicum.ewmmainservice.main.model.Event;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class EventMapper {
 
-    public static Event toEvent(NewEventDto newEventDto) {
+    public static Event toEntity(NewEventDto newEventDto) {
         return Event.builder()
                 .annotation(newEventDto.getAnnotation())
                 .description(newEventDto.getDescription())
@@ -25,7 +23,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventFullDto toEventFullDto(Event event) {
+    public static EventFullDto toFullDto(Event event) {
         if (event == null) {
             return null;
         }
@@ -33,12 +31,12 @@ public class EventMapper {
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
-                .category(event.getCategory() != null ? CategoryMapper.toCategoryDto(event.getCategory()) : null)
+                .category(event.getCategory() != null ? CategoryMapper.toDto(event.getCategory()) : null)
                 .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(event.getCreatedOn())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())
-                .initiator(event.getInitiator() != null ? UserMapper.toUserDto(event.getInitiator()) : null)
+                .initiator(event.getInitiator() != null ? UserMapper.toDto(event.getInitiator()) : null)
                 .location(event.getLocation())
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
@@ -50,7 +48,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventShortDto toEventShortDto(Event event) {
+    public static EventShortDto toShortDto(Event event) {
         if (event == null) {
             return null;
         }
@@ -58,19 +56,14 @@ public class EventMapper {
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
-                .category(event.getCategory() != null ? CategoryMapper.toCategoryDto(event.getCategory()) : null)
+                .category(event.getCategory() != null ? CategoryMapper.toDto(event.getCategory()) : null)
                 .confirmedRequests(event.getConfirmedRequests())
                 .eventDate(event.getEventDate())
-                .initiator(event.getInitiator() != null ? UserMapper.toUserShortDto(event.getInitiator()) : null)
+                .initiator(event.getInitiator() != null ? UserMapper.toShortDto(event.getInitiator()) : null)
                 .paid(event.getPaid())
                 .title(event.getTitle())
                 .views(event.getViews())
                 .build();
     }
 
-    public static Collection<EventFullDto> toEventFullDtoCollection(Collection<Event> events) {
-        return events.stream()
-                .map(EventMapper::toEventFullDto)
-                .collect(Collectors.toList());
-    }
 }

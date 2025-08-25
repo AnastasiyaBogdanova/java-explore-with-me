@@ -30,7 +30,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
             throw new IllegalArgumentException("Compilation with this title already exists");
         }
 
-        Compilation compilation = CompilationMapper.toCompilation(newCompilationDto);
+        Compilation compilation = CompilationMapper.toEntity(newCompilationDto);
 
         if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
             Set<Event> events = new HashSet<>(eventRepository.findAllById(newCompilationDto.getEvents()));
@@ -38,7 +38,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         }
 
         Compilation savedCompilation = compilationRepository.save(compilation);
-        return CompilationMapper.toCompilationDto(savedCompilation);
+        return CompilationMapper.toDto(savedCompilation);
     }
 
     @Override
@@ -76,6 +76,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         }
 
         Compilation updatedCompilation = compilationRepository.save(compilation);
-        return CompilationMapper.toCompilationDto(updatedCompilation);
+        return CompilationMapper.toDto(updatedCompilation);
     }
 }

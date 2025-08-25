@@ -7,7 +7,7 @@ import ru.yandex.practicum.ewmmainservice.main.dto.user.UserShortDto;
 import ru.yandex.practicum.ewmmainservice.main.model.User;
 
 public class UserMapper {
-    public static UserDto toUserDto(User user) {
+    public static UserDto toDto(User user) {
         return new UserDto(
                 user.getId(),
                 user.getEmail(),
@@ -15,7 +15,7 @@ public class UserMapper {
         );
     }
 
-    public static UserShortDto toUserShortDto(User user) {
+    public static UserShortDto toShortDto(User user) {
         return UserShortDto.builder()
                 .id(user.getId())
                 .name(user.getName())
